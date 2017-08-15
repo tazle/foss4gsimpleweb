@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>PattrnFly horizontal nav example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- PatternFly Styles -->
+    <link href="bower_components/patternfly/dist/css/patternfly.min.css" rel="stylesheet" media="screen, print">
+    <link href="bower_components/patternfly/dist/css/patternfly-additions.min.css" rel="stylesheet" media="screen, print">
+
+    <!-- jQuery -->
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- PatternFly Custom Componets -  Sidebar, Popovers and Datatables Customizations -->
+    <!-- Note: jquery.dataTables.js must occur in the html source before patternfly*.js.-->
+    <script src="bower_components/patternfly/dist/js/patternfly.min.js"></script>
+    <script src="bower_components/patternfly/dist/js/patternfly-functions.min.js"></script>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+  <script type="text/javascript" src="../js/leaflet-providers.js"></script>
+
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+
+<body>
+
+<nav class="navbar navbar-default navbar-pf" role="navigation">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-1">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="/">
+      <img src="bower_components/patternfly/dist/img/brand.svg" alt="PatternFly Enterprise Application" />
+    </a>
+  </div>
+  <div class="collapse navbar-collapse navbar-collapse-1">
+    <ul class="nav navbar-nav navbar-primary">
+      <li>
+        <a href="index.html">Home</a>
+      </li>
+      <li>
+        <a href="ebird.html">Birds</a>
+      </li>
+      <li class="active">
+        <a href="observers.html">Observers</a>
+      </li>
+    </ul>
+  </div>
+<!-- trying to get a form in the nav bar -->
+  <div class="container">
+  </div>
+</nav>
+
+
+<div class="container-fluid container-cards-pf">
+  <div class="row row-cards-pf">
+
+    <div class="col-sm-3 col-md-offset-9">
+      <div class="card-pf">
+        <div class="card-pf-heading">
+          <h2 class="card-pf-title">
+            Observers on a Map
+          </h2>
+        </div>
+        <div class="card-pf-body">
+
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label class="sr-only control-label" form="exampleInput">Pick an Observer</label>
+            <div class="col-sm-12">
+              <select id="birdSelect" class="form-control" onChange="getPins(this.value);">
+                <option>obsr297438</option>
+                <option>obsr302446</option>
+                <option>obsr535069</option>
+                <option>obsr187159</option>
+                <option>obsr90708</option>
+              </select>
+            </div>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /row -->
+</div>
+
+<!-- Maybe this will show up on top -->
+<!-- ends container -->
+
+<div id="map" class="map"></div>
+
+</body>
+<script>
+    var map = L.map('map').setView([37.038, -122.06], 11);
+    var markerLayerGroup = L.layerGroup().addTo(map);
+    var stamenLayer = L.tileLayer.provider('Stamen.Terrain').addTo(map);
+
+
+    L.tileLayer('http://geoserver-local.apps.data.molw.io/geoserver/gwc/service/tms/1.0.0/molw%3AFor+Birds@EPSG%3A900913@png/{z}/{x}/{y}.png', {
+        maxzoom: 18,
+        opacity: 0.6,
+        tms: true
+    }).addTo(map);
+
+
+    function getPins( bird){
+        bounds = map.getBounds();
+        url = "http://postgisservice-local.apps.data.molw.io/ws/birds/byobserver/"+bird;
+        $.get(url, pinTheMap, "json")
+    }
+
+    function pinTheMap(data) {
+        //clear the current pins
+        map.removeLayer(markerLayerGroup);
+
+        //add the new pins
+        var markerArray = new Array(data.length)
+        for (var i = 0; i < data.length; i++) {
+            birdObs = data[i];
+            markerArray[i] = L.marker([birdObs.coords[1], birdObs.coords[0]]).bindPopup("<h4>Bird Seen: " + birdObs.commonName + "</h4><p> Date: " + birdObs.startTime + "</p>");
+        }
+
+        markerLayerGroup = L.layerGroup(markerArray).addTo(map);
+    }
+
+    map.whenReady(getPins("obsr297438"))
+
+  </script>
+</html>

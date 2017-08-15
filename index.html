@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Map for Parks</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+  <script type="text/javascript" src="../js/leaflet-providers.js"></script>
+
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+
+<body>
+<h1>Some Parks</h1>
+<div id="map" class="map"></div>
+
+</body>
+<script>
+    var map = L.map('map').setView([37.038, -122.06], 5);
+    var markerLayerGroup = L.layerGroup().addTo(map);
+    var stamenLayer = L.tileLayer.provider('Stamen.Terrain').addTo(map);
+
+
+    //L.tileLayer('http://geoserver-local.apps.data.molw.io/geoserver/gwc/service/tms/1.0.0/molw%3AFor+Birds@EPSG%3A900913@png/{z}/{x}/{y}.png', {
+    L.tileLayer.wms('http://geoserver-developer.apps.class-test.molw.io/gwc/service/tms/1.0.0/steveisgreat%3Aparkpoints@EPSG%3A4326@png/{z}/{x}/{y}.png', {
+        maxzoom: 18,
+        opacity: 0.6,
+        tms: true
+    }).addTo(map);
+
+
+
+
+  </script>
+</html>
