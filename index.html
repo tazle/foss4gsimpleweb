@@ -16,12 +16,12 @@
 </head>
 
 <body>
-<h1>Some Parks</h1>
+<h3>Some Parks</h3>
 <div id="map" class="map"></div>
 
 </body>
 <script>
-    var map = L.map('map').setView([37.038, -110.06], 5);
+    var map = L.map('map').setView([37.038, -110.06], 3);
     //var stamenLayer = L.tileLayer.provider('Stamen.Terrain').addTo(map);
     L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 18,
@@ -29,8 +29,6 @@
     }).addTo(map);
 
 
-
-    //L.tileLayer('http://geoserver-local.apps.data.molw.io/geoserver/gwc/service/tms/1.0.0/molw%3AFor+Birds@EPSG%3A900913@png/{z}/{x}/{y}.png', {
     L.tileLayer.wms('http://geoserver-developer.apps.class-test.molw.io/gwc/service/tms/1.0.0/steveisgreat%3Aparkpoints@EPSG%3A900913@png/{z}/{x}/{y}.png', {
         maxzoom: 18,
         opacity: 0.6,
